@@ -1,0 +1,43 @@
+<script src="./js/auto-tables.js"></script>
+
+<link rel="stylesheet" href="./css/csv-view.css">
+
+<input type="text" class="form-control mb-3 tablesearch-input" data-tablesearch-table="#data-table"  placeholder="Search">
+
+
+<div class="table-responsive">
+    <table id="data-table" class="table tablesearch-table table-bordered table-striped">
+        <% for(let i = 0; i< csvData.length; ++i) { %>
+            <% if (i == 0) { %>
+                <thead><tr>
+                    <%for(let j = 0 ; j < csvData[i].length; ++j) { %>
+                        <th>
+                            <%= csvData[i][j] %>
+                        </th>
+                    <% } %>
+                  </tr></thead>
+
+            <% } else { %>
+                <tr>
+                    <%for(let j = 0 ; j < csvData[i].length; ++j) { %>
+                        <td>
+                            <%= csvData[i][j] %>
+                        </td>
+                    <% } %>
+                </tr>
+            <% } %>     
+        <% } %>
+    </table>
+</div>
+
+<script>
+
+    $(document).ready(function() {
+
+      var headers = $('#data-table thead th');
+
+
+      $('table').not(".tablesort").addClass('tablesort');
+
+    });
+</script>
