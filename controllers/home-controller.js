@@ -15,12 +15,13 @@ const storage =  multer.diskStorage({
         let path = "./uploads/" + fileName;
 
         // store file path in moongose
+        
+        cb(null, fileName);
         await FilePath.create({
             name: "file",
             file: file.originalname,
             path: path      
         })
-        cb(null, fileName);
     }
 })
 const upload = multer({
