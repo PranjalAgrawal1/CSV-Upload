@@ -1,7 +1,30 @@
 <div>
+
+  <div>
     <h1>Upload csv file</h1>
     <form action="/uploadfile" enctype="multipart/form-data" method="post">
       <input type="file" name="myFile" accept='.csv' >
       <input type="submit" value="Upload CSV">
     </form> 
+  </div>
+    
+
+
+
+    <div>
+      <h1>Files : </h1>
+      <ul>
+
+        <% for(let i = 0; i< files.length; i++){ %>
+
+          <li>  <a href="csv-view<%= files[i].path.substring(9) %>"><%= files[i].file %></a> <a href="/delete<%= files[i].path.substring(9) %>">delete </a> </li>
+
+        <% } %>
+
+      </ul>
+
+    </div>
+
+
+    
 </div>

@@ -2,70 +2,90 @@ const fs = require('fs');
 const parse = require('csv-parser');
 const assert = require('assert');
 const multer = require('multer');
+const FilePath = require('../models/file-path');
 
 
-const storage = multer.diskStorage({
+const storage =  multer.diskStorage({
     destination: function(req, file, cb){
         cb(null, './uploads')
     },
-    filename: function(req,res,cb){
-        cb(null, "file.csv");
+    filename: async function(req,file,cb){
+        // rename file
+        let fileName = "file-"+ Date.now() + ".csv";
+        let path = "./uploads/" + fileName;
+
+        // store file path in moongose
+        await FilePath.create({
+            name: "file",
+            file: file.originalname,
+            path: path      
+        })
+        cb(null, fileName);
     }
 })
+const upload = multer({
+    storage: storage,
+    fileFilter: (req,file,cb)=>{
 
-const upload = multer({storage: storage}).single('myFile')
+        // CSV validator
+        if(file.mimetype == 'text/csv'){
+            cb(null, true);
+        } else {
+            cb(null, false);
+            return cb(new Error("lnly .csv file allowed !"));
+        }
+    }
+}).single('myFile');
 
 
-module.exports.home = (req, res) => {
-    res.render('home')
+
+
+
+
+// home page controller
+module.exports.home =  async (req, res) => {
+    let files = await FilePath.find({name: "file"})
+
+    return res.render('home', {files:files})
 }
 
 
+// upload controller
 module.exports.uploadFile = (req, res) =>{
-    
-
 
     upload(req,res,function(err) {
-
         if(err) {  
             console.log(err);
             return res.end("Error uploading file.");  
         }  
-
         console.log('uploaded')
-        res.redirect('csv-view');  
 
+        res.redirect('back');
     });  
-
 }
 
+
+// csv display controller : it converts the csv data to array
 module.exports.csvDisplay = (req, res) => {
-    var csvData = [];
-    let flag = true;
-    fs.createReadStream('./uploads/file.csv')
-    .pipe(parse())
-    .on('data', (row) => {
-
-
-        if(flag){
-            let keys = Object.keys(row);
-            flag = false;
-            csvData.push(keys);
-        }
-
-        let dataArray = Object.keys(row).map(function(k){return row[k]});
-
-        csvData.push(dataArray);
-        // console.log(csvData);
-    })
-    .on('end', ()=> {
-        console.log('csv file process successfully');
-        // var dataArray = Object.keys(csvData).map(function(k){ return csvData[k]})
-
-
-                // console.log(csvData)
-        res.render('csv-view', { csvData: csvData})
-    });
-
-
+    if(req.params.id){
+        var csvData = [];
+        let flag = true;
+        fs.createReadStream('./uploads/' + req.params.id)
+        .pipe(parse())
+        .on('data', (row) => {
+            if(flag){
+                let keys = Object.keys(row);
+                flag = false;
+                csvData.push(keys);
+            }
+            let dataArray = Object.keys(row).map(function(k){return row[k]});
+            csvData.push(dataArray);
+        })
+        .on('end', ()=> {
+            console.log('csv file processed successfully');
+            res.render('csv-view', { csvData: csvData})
+        });
+    } else {
+        res.redirect('/')
+    }   
 }

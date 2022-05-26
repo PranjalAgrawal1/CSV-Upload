@@ -10,6 +10,7 @@
   "author": "Pranjal Agrawal",
   "license": "ISC",
   "dependencies": {
+    "connect-mongo": "^4.6.0",
     "cookie-parser": "^1.4.6",
     "csv": "^6.1.0",
     "csv-parser": "^3.0.0",
@@ -19,6 +20,7 @@
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.17.3",
     "fs": "^0.0.1-security",
+    "mongoose": "^6.3.4",
     "multer": "^1.4.4",
     "nodemon": "^2.0.16"
   }
