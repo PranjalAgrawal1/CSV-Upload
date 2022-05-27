@@ -45,7 +45,7 @@ CSV Upload
 │   └── file-path.js
 ├── routes
 │   └── index.js
-├── uoploads
+├── uploads
 │   ├── file.csv
 :   :
 :   :

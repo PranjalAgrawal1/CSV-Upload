@@ -45,7 +45,7 @@ const upload = multer({
 
 // home page controller
 module.exports.home =  async (req, res) => {
-    let files = await FilePath.find({name: "file"})
+    let files = await FilePath.find();
 
     return res.render('home', {files:files})
 }
