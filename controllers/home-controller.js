@@ -45,48 +45,65 @@ const upload = multer({
 
 // home page controller
 module.exports.home =  async (req, res) => {
-    let files = await FilePath.find();
-
-    return res.render('home', {files:files})
+    try{
+        let files = await FilePath.find();
+        return res.render('home', {files:files})
+    }catch(err){
+        console.log(err);
+        res.redirect('back');
+    }
 }
 
 
 // upload controller
 module.exports.uploadFile = (req, res) =>{
 
-    upload(req,res,function(err) {
-        if(err) {  
-            console.log(err);
-            return res.end("Error uploading file.");  
-        }  
-        console.log('uploaded')
-
+    try{
+        upload(req,res,function(err) {
+            if(err) {  
+                console.log(err);
+                return res.end("Error uploading file.");  
+            }  
+            console.log('uploaded')
+    
+            res.redirect('back');
+        });  
+    
+    }catch(err){
+        console.log(err);
         res.redirect('back');
-    });  
+
+    }
 }
 
 
 // csv display controller : it converts the csv data to array
 module.exports.csvDisplay = (req, res) => {
-    if(req.params.id){
-        var csvData = [];
-        let flag = true;
-        fs.createReadStream('./uploads/' + req.params.id)
-        .pipe(parse())
-        .on('data', (row) => {
-            if(flag){
-                let keys = Object.keys(row);
-                flag = false;
-                csvData.push(keys);
-            }
-            let dataArray = Object.keys(row).map(function(k){return row[k]});
-            csvData.push(dataArray);
-        })
-        .on('end', ()=> {
-            console.log('csv file processed successfully');
-            res.render('csv-view', { csvData: csvData})
-        });
-    } else {
-        res.redirect('/')
+    try{
+        if(req.params.id){
+            var csvData = [];
+            let flag = true;
+            fs.createReadStream('./uploads/' + req.params.id)
+            .pipe(parse())
+            .on('data', (row) => {
+                if(flag){
+                    let keys = Object.keys(row);
+                    flag = false;
+                    csvData.push(keys);
+                }
+                let dataArray = Object.keys(row).map(function(k){return row[k]});
+                csvData.push(dataArray);
+            })
+            .on('end', ()=> {
+                console.log('csv file processed successfully');
+                res.render('csv-view', { csvData: csvData})
+            });
+        } else {
+            res.redirect('/')
+        }
+
+    }catch(err){
+        console.log(err);
+        res.redirect('back');
     }   
 }
