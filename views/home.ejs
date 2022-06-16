@@ -1,30 +1,45 @@
 <div>
 
   <div>
-    <h1>Upload csv file</h1>
+
     <form action="/uploadfile" enctype="multipart/form-data" method="post">
-      <input type="file" name="myFile" accept='.csv' >
-      <input type="submit" value="Upload CSV">
-    </form> 
+
+      <fieldset>
+        <legend>
+          Upload csv file
+        </legend>
+        <input type="file" name="myFile" accept='.csv'>
+        <input type="submit" value="Upload CSV">
+
+      </fieldset>
+    </form>
+
   </div>
-    
 
 
 
-    <div>
-      <h2>Files : </h2>
+
+  <div>
+    <fieldset>
+      <legend>
+        Files :
+      </legend>
       <ul>
 
-        <% for(let i = 0; i< files.length; i++){ %>
+        <% for(let i=0; i< files.length; i++){ %>
 
-          <li>  <a href="csv-view<%= files[i].path.substring(9) %>"><%= files[i].file %></a> </li>
+          <li> <a href="csv-view<%= files[i].path.substring(9) %>">
+              <%= files[i].file %>
+            </a> </li>
 
-        <% } %>
+          <% } %>
 
       </ul>
+    </fieldset>
 
-    </div>
+
+  </div>
 
 
-    
+
 </div>
